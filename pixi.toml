@@ -62,6 +62,12 @@ session-info2 = "*"
 spatialbrain = { path = ".", editable = true }
 igraph = ">=1.0.0, <2"
 celltypist = ">=1.7.1, <2"
+spatialdata = ">=0.7.3, <0.8"
+spatialdata-io = ">=0.7.0, <0.8"
+spatialdata-plot = ">=0.4.0, <0.5"
+cellpose = ">=4.2.1.1, <5"
+liana = ">=1.8.0, <2"
+decoupler = ">=2.1.6, <3"
 
 # GPU stack — only materialized in the `gpu` environment (Linux + CUDA 12).
 # The default environment is CPU-only and is what CI installs; macOS local also
