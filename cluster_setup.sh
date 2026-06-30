@@ -71,7 +71,7 @@ echo ">> pixi install (a few minutes the first time)"
 pixi install
 echo ">> registering Jupyter kernel"
 pixi run install-kernel
-echo ">> installing git hooks (pre-commit + nbstripout)"
+echo ">> installing git hooks (pre-commit)"
 pixi run install-hooks
 
 # --- Baysor segmentation binary (shared, not per-student) ---

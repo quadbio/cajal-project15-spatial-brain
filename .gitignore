@@ -152,6 +152,9 @@ dmypy.json
 
 # Directories to ignore
 figures/
+# Auto-downloaded demo datasets (e.g. scanpy/squidpy via sc.settings.datasetdir = data/demo);
+# ignore the whole cache dir so non-h5ad demo artifacts can't leak into git either.
+data/demo/
 
 # OS specifics
 **.DS_Store

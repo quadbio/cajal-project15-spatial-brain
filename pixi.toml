@@ -19,7 +19,7 @@ lab = "jupyter lab"
 test = "pytest"
 rename = { cmd = "python scripts/rename_package.py", description = "Rename the placeholder package/project (run once on a fresh clone; see scripts/rename_package.py)" }
 install-kernel = { cmd = "python -m ipykernel install --user --name=spatialbrain --display-name='Spatial Brain (Project 15)' && python scripts/patch_kernel_env.py", description = "Register the Jupyter kernel and patch its LD_LIBRARY_PATH so the env's libstdc++ loads first (avoids torch-vs-icu CXXABI clashes)." }
-install-hooks = { cmd = "pre-commit install --install-hooks && nbstripout --install && git config diff.ipynb.textconv 'nbstripout -t'", description = "Install pre-commit hooks + the nbstripout notebook-output filter (run once per clone)" }
+install-hooks = { cmd = "pre-commit install --install-hooks", description = "Install pre-commit hooks (run once per clone)" }
 
 [dependencies]
 python = "3.12.*"

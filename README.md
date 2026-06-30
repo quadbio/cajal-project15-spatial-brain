@@ -69,7 +69,7 @@ from §0) for editing and git, and run notebooks / heavy compute via OnDemand or
 ## 4. Daily workflow
 
 - Notebooks live in `analysis/`, named `INITIALS-YYYY-MM-DD_description.ipynb`.
-- Notebook outputs are auto-stripped from git (nbstripout) — rendered locally, clean in git.
+- Notebooks are committed **with** their outputs — so executed solution notebooks stay readable.
 - Commit & push to **your fork**:
   ```bash
   git add -A && git commit -m "..." && git push
@@ -95,7 +95,6 @@ CPUs and ~16–32 GB via OnDemand or Slurm; no `gpu` environment is needed or pr
   [pixi docs](https://pixi.sh/latest/).
 - **Helper package:** `src/spatialbrain/` — `FilePaths` for project data paths.
 - **Code quality:** [pre-commit](https://pre-commit.com/) hooks (set up by `cluster_setup.sh`) —
-  [ruff](https://docs.astral.sh/ruff/) lint/format + [nbstripout](https://github.com/kynan/nbstripout)
-  for notebook-output stripping.
+  [ruff](https://docs.astral.sh/ruff/) lint/format.
 - **Science:** [scanpy](https://scanpy.readthedocs.io) · [squidpy](https://squidpy.readthedocs.io) ·
   [spatialdata](https://spatialdata.scverse.org) · [single-cell best practices](https://www.sc-best-practices.org/).
