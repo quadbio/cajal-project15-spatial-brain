@@ -199,6 +199,33 @@ right slot and pick the right framework per task.
 
 *"What did the instrument measure, and which cells can we trust?"*
 
+> **✅ Build status — done, executed, reviewed.** Two notebooks in `analysis/level1/`, each as a
+> `_solution` (full code + outputs) and a `_student` (exercise cells stubbed) pair:
+> - **Part 1 — `01_load_and_qc`:** load the SpatialData, DAPI/poly(T) stains, canonical lineage
+>   markers in space (SATB2/VIM/DLX2/AQP4/PDGFRA/CLDN5), QC the vendor cells (counts/genes/volume).
+>   Developing-cortex framing, **neutral naming** (no paper / no fine cell types).
+> - **Part 2 — `02_segmentation_and_metric`:** self-contained — makes crop C, re-segments 4 ways,
+>   compares. Storyline: re-segmentation assigns more transcripts (Vendor ~52% → CellPose ~80% /
+>   Proseg ~86% / Baysor ~95%); purity flat ~0.97 for all (well-separated cells → non-discriminating
+>   guard rail). Bar charts + covariate table/violins + Vendor-vs-Proseg UMAPs.
+>
+> **Locked decisions (as built):**
+> - **Crop C** — center px (88000, 33000), **1000 µm**; NB2 writes it to the student's git-ignored
+>   `data/` via `FilePaths` (dev crops in `…/C15/_l1_scratch`).
+> - **Segmentation (`l1_utils.py`, process-parallel CLI, CPU):** CellPose v3 whole-cell
+>   `["PolyT","DAPI"]`, **diameter 96 px**; Baysor (`prior_segmentation_confidence=0.5`); Proseg.
+> - **Metrics:** x = **fraction of transcripts assigned** (pre-QC; the discriminating axis);
+>   y = **negative-marker purity** (guard rail). Pairs derived from the reference `class` lineages
+>   (`mutually_exclusive_markers_from_reference` → 154 pairs), not hand-picked. Cite Salas + ResolVI.
+> - **Uniform QC** across methods (≥10 counts, ≥3 genes, ≥15 µm²), table+shapes kept in sync.
+> - **Kernel: `spatialbrain-sif`** — the pixi `spatialbrain` kernel can't find `proseg` on PATH; the
+>   SIF has the full toolchain. Executed headless via nbconvert-inside-apptainer.
+>
+> **Deferred / notes:** kept the **z3** base zarr (the all-z `authors_cells` rebuild was dropped
+> under time pressure — z3 under-counts the vendor baseline, but the storyline holds). Passed an
+> adversarial 3-critic review (factual / coherence / paper-leak); all findings addressed.
+
+
 1. **Load** `UCSF2018-003-MFG_baseline.zarr` (SpatialData; contents in §Staged data). z3-only, 90,962 cells.
 2. **Explore & QC** — transcripts/cell, genes/cell, in-situ markers over DAPI/polyT; control
    probes, volume, counts, doublets. (Standard MERSCOPE QC — keep student framing neutral.)

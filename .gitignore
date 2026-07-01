@@ -153,6 +153,8 @@ dmypy.json
 
 # Directories to ignore
 figures/
+# SpatialData / Zarr stores (crops, segmentations) — large, never committed
+*.zarr/
 # Auto-downloaded demo datasets (e.g. scanpy/squidpy via sc.settings.datasetdir = data/demo);
 # ignore the whole cache dir so non-h5ad demo artifacts can't leak into git either.
 data/demo/
@@ -169,3 +171,4 @@ data/demo/
 # Claude Code local files (personal settings + local agent worktrees)
 .claude/settings.local.json
 .claude/worktrees/
+analysis/level1/__pycache__/
