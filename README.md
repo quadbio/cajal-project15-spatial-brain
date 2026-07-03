@@ -77,8 +77,39 @@ CPUs / 16 GB) and launch.
 
 > Don't run heavy work on the login node.
 
-**Using Claude Code or a desktop editor?** Connect to the cluster over SSH (with your key
-from §0) for editing and git, and run notebooks / heavy compute via OnDemand or Slurm.
+### Local VS Code (Remote-SSH) — optional
+
+Prefer your own editor? You can drive the cluster from a local **VS Code** so that editing,
+terminals, and the Jupyter/Claude Code extensions all run on a **compute node** (never the
+login node). One command on the cluster sets it up:
+
+```bash
+bash scripts/setup_vscode_remote.sh
+```
+
+It installs two small helpers into `~/bin` and prints a ready-to-paste block for your
+laptop's `~/.ssh/config`. Assuming you already `ssh` to the cluster (§0 key + a login host),
+the only new laptop change is one host, **`cajal-cpu`** — your **compute node**, resolved
+dynamically to whatever Slurm job you have running (it prefers a job named `vscode*`). No
+hardcoded node names. (If your existing login host isn't named `cajal`, change the one
+`ssh cajal` in its `ProxyCommand` to match — the script's output explains this.) You'll also
+install the VS Code **Remote - SSH** extension.
+
+Then, each session: start an allocation and point VS Code at `cajal-cpu`:
+
+```bash
+# start a compute allocation (8h, adjust as needed)
+ssh cajal "sbatch -J vscode -p fast -A tp_2630_ubordeaux_neuromics_184418 \
+  -c 4 --mem=16G -t 08:00:00 --wrap='sleep infinity'"
+```
+
+In VS Code (with the **Remote - SSH** extension): `F1` → **Remote-SSH: Connect to Host…** →
+**`cajal-cpu`**. You land on your job's node; open your repo and work as usual. When the
+allocation ends, start a new one and reconnect — `cajal-cpu` follows it automatically.
+The script prints the full step-by-step; see [`scripts/setup_vscode_remote.sh`](scripts/setup_vscode_remote.sh).
+
+**Just need SSH for editing and git?** Connect to `cajal` with your key from §0, and run
+notebooks / heavy compute via OnDemand or Slurm.
 
 ## 4. Daily workflow
 
