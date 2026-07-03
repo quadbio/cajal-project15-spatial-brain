@@ -1,17 +1,14 @@
 {
     "argv": [
-        "apptainer",
-        "exec",
-        "--bind",
-        "/shared",
-        "/shared/projects/tp_2630_ubordeaux_neuromics_184418/containers/marius/spatialbrain.sif",
-        "python",
-        "-m",
-        "ipykernel_launcher",
-        "-f",
+        "bash",
+        "-c",
+        "cf=\"$1\"; d=$(dirname \"$cf\"); binds=(--bind /shared); case \"$d\" in \"$HOME\"/*|/tmp|/tmp/*) ;; *) mkdir -p \"$d\" 2>/dev/null && binds+=(--bind \"$d\") ;; esac; exec apptainer exec \"${binds[@]}\" /shared/projects/tp_2630_ubordeaux_neuromics_184418/containers/marius/spatialbrain.sif python -m ipykernel_launcher -f \"$cf\"",
+        "spatialbrain-sif",
         "{connection_file}"
     ],
     "display_name": "Spatial Brain (SIF)",
     "language": "python",
-    "metadata": { "debugger": true }
+    "metadata": {
+        "debugger": true
+    }
 }

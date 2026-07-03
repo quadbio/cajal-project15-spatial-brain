@@ -33,43 +33,10 @@ install -m 0755 "$SRC/vscode-node.sh"  "$HOME/bin/vscode-node.sh"
 install -m 0755 "$SRC/vscode-proxy.sh" "$HOME/bin/vscode-proxy.sh"
 echo "   installed -> ~/bin/vscode-node.sh, ~/bin/vscode-proxy.sh"
 
-# --- make Jupyter kernels start under VS Code (writable XDG_RUNTIME_DIR) ---
-# Compute nodes advertise XDG_RUNTIME_DIR=/run/user/$UID, but that dir isn't created/writable
-# on the node — so VS Code's Jupyter extension can't write the kernel connection file and the
-# kernel dies with "OSError: [Errno 30] Read-only file system: '/run/user'". (OnDemand batch
-# jobs don't set the variable, so they're unaffected.) We add a guarded block that repoints it
-# to a writable per-user dir ONLY when the advertised one is unusable — a no-op on the login
-# node and under OnDemand. It's added to both ~/.bashrc and ~/.profile so it applies however
-# VS Code Remote-SSH resolves the server environment (interactive vs. login shell). Idempotent.
-MARKER="# >>> spatialbrain vscode: writable XDG_RUNTIME_DIR >>>"
-add_xdg_fix() {  # $1 = rc file to patch
-  local rc="$1"
-  if [ -f "$rc" ] && grep -qF "$MARKER" "$rc"; then
-    echo "   already present in ${rc/#$HOME/\~} — leaving it"; return
-  fi
-  cat >> "$rc" <<'BRC'
-
-# >>> spatialbrain vscode: writable XDG_RUNTIME_DIR >>>
-# Compute nodes advertise an XDG_RUNTIME_DIR (/run/user/$UID) that isn't usable there, which
-# breaks VS Code Jupyter kernels ("Read-only file system: '/run/user'"). When the advertised
-# one is missing/unwritable, repoint it to a private node-local dir — or unset it so tools fall
-# back to their own default — rather than leave a broken value. No output on load.
-if [ -n "${XDG_RUNTIME_DIR:-}" ] && ! { [ -d "$XDG_RUNTIME_DIR" ] && [ -w "$XDG_RUNTIME_DIR" ]; }; then
-  if mkdir -p "/tmp/xdg-runtime-$(id -u)" 2>/dev/null; then
-    chmod 700 "/tmp/xdg-runtime-$(id -u)" 2>/dev/null
-    export XDG_RUNTIME_DIR="/tmp/xdg-runtime-$(id -u)"
-  else
-    unset XDG_RUNTIME_DIR
-  fi
-fi
-# <<< spatialbrain vscode: writable XDG_RUNTIME_DIR <<<
-BRC
-  echo "   patched -> ${rc/#$HOME/\~}"
-}
-echo ">> ensuring a writable XDG_RUNTIME_DIR (so VS Code can start Jupyter kernels)"
-add_xdg_fix "$HOME/.bashrc"
-add_xdg_fix "$HOME/.profile"
-echo "   (reconnect VS Code — 'Kill VS Code Server on Host' then reconnect — to pick it up)"
+# Note: Jupyter-kernel startup under VS Code needs the SIF kernelspec that scripts/cluster_setup.sh
+# installs (it binds the client's connection-file dir into the container, which otherwise can't see
+# the /run/user path VS Code passes). If a kernel dies with "Read-only file system: '/run/user'",
+# (re-)run: bash scripts/cluster_setup.sh — then restart the kernel.
 
 # --- emit the personalized laptop SSH config ---
 # We assume you already SSH to the cluster (basic key + a login host in ~/.ssh/config), so
