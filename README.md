@@ -108,6 +108,13 @@ In VS Code (with the **Remote - SSH** extension): `F1` → **Remote-SSH: Connect
 allocation ends, start a new one and reconnect — `cajal-cpu` follows it automatically.
 The script prints the full step-by-step; see [`scripts/setup_vscode_remote.sh`](scripts/setup_vscode_remote.sh).
 
+The script also adds a small guard to your `~/.bashrc` / `~/.profile` so Jupyter kernels
+start under VS Code: compute nodes advertise an unusable `XDG_RUNTIME_DIR`, which otherwise
+makes the kernel fail with `OSError: [Errno 30] Read-only file system: '/run/user'`. If you
+hit that error, run the script (once) and fully reconnect — in VS Code, `F1` →
+**Remote-SSH: Kill VS Code Server on Host…** → `cajal-cpu`, then reconnect — so the new
+environment is picked up.
+
 **Just need SSH for editing and git?** Connect to `cajal` with your key from §0, and run
 notebooks / heavy compute via OnDemand or Slurm.
 
